@@ -1,2 +1,4 @@
 .AddCompLib
-bin/fusion.exe
+*.vsix
+*.pyc
+*.exe
