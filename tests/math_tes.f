@@ -12,6 +12,6 @@ fn main() -> int {
 //    print(add);
 //    print(h["a"]);
 //    print(h.a);
-//    return 0;
+    return add;
 }
 main();
