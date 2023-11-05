@@ -2,16 +2,19 @@
 
 Example:
 ```cs
-package math_tes;
+package main;
 
 using "@/std";
 
 fn main(string[] args) -> int {
-    var x: int = 4;
-    var z: int = -2;
+    int x = 4;
+    int z = -2;
 
-    var add: int = x + z;
-    print(add)
+    int add = x + z;
+    std.print(add)
     return 0;
 }
 ```
+
+All .f files must have a `fn main(string[] args) -> int {}` so it can launch it if it is the main file
+the package name must be the same as the file name
