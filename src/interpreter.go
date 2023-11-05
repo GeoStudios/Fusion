@@ -22,9 +22,16 @@ func (s *Interpreter) Eval(node AstNode, env *Env) Object {
 	} 
 	case _BlockStmt: {
 		var lastEval Object
-		for _, v := range node.(*BlockStmt).Body { lastEval = s.Eval(v, env) }
+		for _, v := range node.(*BlockStmt).Body {
+			q := s.Eval(v, env)
+			if q.Type() == _ReturnObject {
+				lastEval = q
+				break
+			}
+		}
 		return lastEval
 	}
+	case _ReturnStmt: return &ReturnObject{Value: s.Eval(node.(*ReturnStmt).Expression, env)}
 	case _FunctionStmt: return s.EvaluateFunction(node.(*FunctionStmt), env)
 	case _CallExpr: return s.EvaluateCallExpr(node.(*CallExpr), env)
 	case _Identifier: return env.LookupVar(node.(*Identifier).Value)
@@ -101,20 +108,15 @@ func (s *Interpreter) EvaluateBinaryExpr(node *BinaryExpr, env *Env) Object {
 	right := s.Eval(node.Right, env)
 	l := UnWrapAsFloat(left)
 	r := UnWrapAsFloat(right)
-	op := (left.Type() == _IntObject) && (right.Type() == _IntObject)
+	inn := (left.Type() == _IntObject) && (right.Type() == _IntObject)
+	var res float64
 	switch node.Op {
-		case Plus:
-			if op { return &IntObject{Value: int(l + r)} }
-			return &FloatObject{Value: l + r}
-		case Minus: 
-			if op { return &IntObject{Value: int(l - r)} }
-			return &FloatObject{Value: l - r}
-		case Multiply:
-			if op { return &IntObject{Value: int(l * r)} }
-			return &FloatObject{Value: l * r}
-		case Divide:
-			if op { return &IntObject{Value: int(l / r)} }
-			return &FloatObject{Value: l / r}
+		case Plus: res = l + r
+		case Minus: res = l - r
+		case Multiply: res =l * r
+		case Divide: res = l / r
 	}
-	return nil;
+	if inn {
+		return &IntObject{Value: int(res)}
+	}; return &FloatObject{Value: res}
 }

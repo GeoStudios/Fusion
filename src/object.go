@@ -9,15 +9,16 @@ type ObjectTypes int
 
 const (
 	_NullObject       ObjectTypes = iota
-	_IntObject        ObjectTypes = iota
-	_FloatObject      ObjectTypes = iota
-	_StringObject     ObjectTypes = iota
-	_BooleanObject    ObjectTypes = iota
-	_HashObject       ObjectTypes = iota
-	_MemberObject     ObjectTypes = iota
-	_ArrayObject      ObjectTypes = iota
-	_FuncObject       ObjectTypes = iota
-	_NativeFuncObject ObjectTypes = iota
+	_IntObject        
+	_FloatObject      
+	_StringObject     
+	_BooleanObject    
+	_HashObject       
+	_MemberObject     
+	_ArrayObject      
+	_FuncObject       
+	_NativeFuncObject 
+	_ReturnObject
 )
 
 type Object interface {
@@ -88,6 +89,21 @@ type FunctionObject struct {
 
 func (s *FunctionObject) Type() ObjectTypes { return _FuncObject }
 func (s *FunctionObject) String() string { return "\""+s.Body.String()+"\"" }
+
+type NativeCall func(args []Object, env Env) Object
+
+type NativeFunctionObject struct {
+	Object
+	Name string
+}
+
+type ReturnObject struct {
+	Object
+	Value Object
+}
+
+func (s *ReturnObject) Type() ObjectTypes { return _ReturnObject }
+func (s *ReturnObject) String() string { return s.Value.String() }
 
 func UnWrapAsInt(o Object) int {
 	switch o.Type() {

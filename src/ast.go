@@ -19,7 +19,8 @@ const (
 	_BlockStmt
 	_VarStmt
 	_FunctionStmt
-
+	_ReturnStmt
+	
 	_Identifier
 	_StringLiteral
 	_FloatLiteral64
@@ -219,7 +220,7 @@ type ReturnStmt struct {
 	Expression Expr
 }
 
-func (t *ReturnStmt) Type() AstNodeType { return _FunctionStmt }
+func (t *ReturnStmt) Type() AstNodeType { return _ReturnStmt }
 func (t *ReturnStmt) String() string {
 	var str bytes.Buffer
 	str.WriteString("return ")
