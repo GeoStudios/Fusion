@@ -6,55 +6,55 @@ import (
 	"strings"
 )
 
-type AstNodeType int
+type Typed_AstNodetype int
 
 const (
-	_Program AstNodeType = iota
-	_ExprStmt
-	_PackageStmt
-	_ImportStmt
+	_Typed_Program Typed_AstNodetype = iota
+	_Typed_ExprStmt
+	_Typed_PackageStmt
+	_Typed_ImportStmt
 
-	_IfStmt
-	_WhileStmt
-	_BlockStmt
-	_VarStmt
-	_FunctionStmt
+	_Typed_IfStmt
+	_Typed_WhileStmt
+	_Typed_BlockStmt
+	_Typed_VarStmt
+	_Typed_FunctionStmt
 
-	_Identifier
-	_StringLiteral
-	_FloatLiteral64
-	_FloatLiteral32
-	_IntLiteral
-	_BoolLiteral
-	_NullLiteral
-	_HashLiteral
-	_ArrayLiteral
+	_Typed_Identifier
+	_Typed_StringLiteral
+	_Typed_FloatLiteral64
+	_Typed_FloatLiteral32
+	_Typed_IntLiteral
+	_Typed_BoolLiteral
+	_Typed_NullLiteral
+	_Typed_HashLiteral
+	_Typed_ArrayLiteral
 
-	_AssginmentExpr
-	_TernaryExpr
-	_BinaryExpr
-	_PrefixExpr
-	_PostfixExpr
-	_CallExpr
-	_MemberExpr
+	_Typed_AssginmentExpr
+	_Typed_TernaryExpr
+	_Typed_BinaryExpr
+	_Typed_PrefixExpr
+	_Typed_PostfixExpr
+	_Typed_CallExpr
+	_Typed_MemberExpr
 )
 
-type AstNode interface {
+type Typed_AstNode interface {
 	String() string
-	Type() AstNodeType
+	Type() Typed_AstNodetype
 }
 
-type Stmt interface{ AstNode }
-type Expr interface{ AstNode }
+type Typed_Stmt interface{ AstNode }
+type Typed_Expr interface{ AstNode }
 
-type Program struct {
+type Typed_Program struct {
 	Stmt
 	Body []Stmt
 	PackageName string
 }
 
-func (t *Program) Type() AstNodeType { return _Program }
-func (t *Program) String() string {
+func (t *Typed_Program) Type() Typed_AstNodetype { return _Typed_Program }
+func (t *Typed_Program) String() string {
 	var str bytes.Buffer
 	str.WriteString("package ")
 	str.WriteString(t.PackageName)
@@ -69,45 +69,45 @@ func (t *Program) String() string {
 	return str.String()
 }
 
-type ExprStmt struct {
+type Typed_ExprStmt struct {
 	Stmt
 	Expression Expr
 }
 
-func (t *ExprStmt) Type() AstNodeType { return _ExprStmt }
-func (t *ExprStmt) String() string    { return t.Expression.String()+";" }
+func (t *Typed_ExprStmt) Type() Typed_AstNodetype { return _Typed_ExprStmt }
+func (t *Typed_ExprStmt) String() string    { return t.Expression.String()+";" }
 
-// type PackageStmt struct {
+// type Typed_PackageStmt struct {
 // 	Stmt
 // 	PackageName string
 // }
 
-// func (t *PackageStmt) Type() AstNodeType { return _PackageStmt }
-// func (t *PackageStmt) String() string    { return "package " + t.PackageName }
+// func (t *Typed_PackageStmt) Type() Typed_AstNodetype Typed_{ return _PackageStmt }
+// func (t *Typed_PackageStmt) String() string    { return "package " + t.PackageName }
 
-type ImportStmt struct {
+type Typed_ImportStmt struct {
 	Stmt
 	PackageName string
 	IsBuiltIn   bool
 }
 
-func (t *ImportStmt) Type() AstNodeType { return _PackageStmt }
-func (t *ImportStmt) String() string    {
+func (t *Typed_ImportStmt) Type() Typed_AstNodetype { return _Typed_PackageStmt }
+func (t *Typed_ImportStmt) String() string    {
 	if t.IsBuiltIn {
 		return "using \"@/" + strings.TrimPrefix(t.PackageName, "core/") + "\""
 	}
 	return "using \"" + t.PackageName + "\";"
 }
 
-type IfStmt struct {
+type Typed_IfStmt struct {
 	Stmt
 	Condition Expr
 	OnTrue Stmt
 	OnFalse Stmt
 }
 
-func (t *IfStmt) Type() AstNodeType { return _IfStmt }
-func (t *IfStmt) String() string {
+func (t *Typed_IfStmt) Type() Typed_AstNodetype { return _Typed_IfStmt }
+func (t *Typed_IfStmt) String() string {
 	var str bytes.Buffer
 	str.WriteString("if (")
 	str.WriteString(t.Condition.String())
@@ -120,14 +120,14 @@ func (t *IfStmt) String() string {
 	return str.String()
 }
 
-type WhileStmt struct {
+type Typed_WhileStmt struct {
 	Stmt
 	Condition Expr
 	Loop Stmt
 }
 
-func (t *WhileStmt) Type() AstNodeType { return _WhileStmt }
-func (t *WhileStmt) String() string {
+func (t *Typed_WhileStmt) Type() Typed_AstNodetype { return _Typed_WhileStmt }
+func (t *Typed_WhileStmt) String() string {
 	var str bytes.Buffer
 	str.WriteString("while (")
 	str.WriteString(t.Condition.String())
@@ -136,13 +136,13 @@ func (t *WhileStmt) String() string {
 	return str.String()
 }
 
-type BlockStmt struct {
+type Typed_BlockStmt struct {
 	Stmt
 	Body []Stmt
 }
 
-func (t *BlockStmt) Type() AstNodeType { return _BlockStmt }
-func (t *BlockStmt) String() string {
+func (t *Typed_BlockStmt) Type() Typed_AstNodetype { return _Typed_BlockStmt }
+func (t *Typed_BlockStmt) String() string {
 	var str bytes.Buffer
 	str.WriteString("{")
 	for _, v := range t.Body {
@@ -156,19 +156,19 @@ func (t *BlockStmt) String() string {
 	return str.String()
 }
 
-type VarStmt struct {
+type Typed_VarStmt struct {
 	Stmt
 	Name string
 	IsConst bool
 	Value Expr
-	ObjType ObjectTypes
+	Objtype ObjectTypes
 }
 
-func (t *VarStmt) Type() AstNodeType { return _VarStmt }
-func (t *VarStmt) String() string {
+func (t *Typed_VarStmt) Type() Typed_AstNodetype { return _Typed_VarStmt }
+func (t *Typed_VarStmt) String() string {
 	var str bytes.Buffer
 	// if t.IsConst { str.WriteString("const ") } else { str.WriteString("var ") }
-	switch t.ObjType {
+	switch t.Objtype{
 		case _StringObject: str.WriteString("string ")
 		case _BooleanObject: str.WriteString("boolean ")
 		case _IntObject: str.WriteString("int ")
@@ -181,29 +181,27 @@ func (t *VarStmt) String() string {
 	return str.String()
 }
 
-type FunctionStmt struct {
+type Typed_FunctionStmt struct {
 	Stmt
 	Name string
-	Args []Arg
+	Args []Expr
 	Body Stmt
-	ObjType ObjectTypes
+	Objtype ObjectTypes
 }
 
-func (t *FunctionStmt) Type() AstNodeType { return _FunctionStmt }
-func (t *FunctionStmt) String() string {
+func (t *Typed_FunctionStmt) Type() Typed_AstNodetype { return _Typed_FunctionStmt }
+func (t *Typed_FunctionStmt) String() string {
 	var str bytes.Buffer
 	str.WriteString("fn ")
 	str.WriteString(t.Name)
 	str.WriteString("(")
 	for i, v := range t.Args {
-		str.WriteString(fmt.Sprint(v.Type))
-		str.WriteString(" ")
-		str.WriteString(v.Value)
+		str.WriteString(v.String())
 		if i < len(t.Args)-1 { str.WriteString(",") }
 	}
 	str.WriteString(") ")
 	str.WriteString("-> ")
-	switch t.ObjType {
+	switch t.Objtype{
 		case _StringObject: str.WriteString("string ")
 		case _BooleanObject: str.WriteString("boolean ")
 		case _IntObject: str.WriteString("int ")
@@ -214,26 +212,26 @@ func (t *FunctionStmt) String() string {
 	return str.String()
 }
 
-type ReturnStmt struct {
+type Typed_ReturnStmt struct {
 	Stmt
 	Expression Expr
 }
 
-func (t *ReturnStmt) Type() AstNodeType { return _FunctionStmt }
-func (t *ReturnStmt) String() string {
+func (t *Typed_ReturnStmt) Type() Typed_AstNodetype { return _Typed_FunctionStmt }
+func (t *Typed_ReturnStmt) String() string {
 	var str bytes.Buffer
 	str.WriteString("return ")
 	str.WriteString(t.Expression.String())
 	return str.String()
 }
 
-type StringLiteral struct {
+type Typed_StringLiteral struct {
 	Expr
 	Value string
 }
 
-func (t *StringLiteral) Type() AstNodeType { return _StringLiteral }
-func (t *StringLiteral) String() string {
+func (t *Typed_StringLiteral) Type() Typed_AstNodetype { return _Typed_StringLiteral }
+func (t *Typed_StringLiteral) String() string {
 	var str bytes.Buffer
 	str.WriteString("\"")
 	str.WriteString(t.Value)
@@ -241,50 +239,50 @@ func (t *StringLiteral) String() string {
 	return str.String()
 }
 
-type Identifier struct {
+type Typed_Identifier struct {
 	Expr
 	Value string
 }
 
-func (t *Identifier) Type() AstNodeType { return _Identifier }
-func (t *Identifier) String() string { return t.Value }
+func (t *Typed_Identifier) Type() Typed_AstNodetype { return _Typed_Identifier }
+func (t *Typed_Identifier) String() string { return t.Value }
 
-type NullLiteral struct { Expr }
+type Typed_NullLiteral struct { Expr }
 
-func (t *NullLiteral) Type() AstNodeType { return _NullLiteral }
-func (t *NullLiteral) String() string { return "null" }
+func (t *Typed_NullLiteral) Type() Typed_AstNodetype { return _Typed_NullLiteral }
+func (t *Typed_NullLiteral) String() string { return "null" }
 
-type FloatLiteral struct {
+type Typed_FloatLiteral struct {
 	Expr
 	Value float64
 }
 
-func (t *FloatLiteral) Type() AstNodeType { return _FloatLiteral64 }
-func (t *FloatLiteral) String() string { return fmt.Sprint(t.Value) }
+func (t *Typed_FloatLiteral) Type() Typed_AstNodetype { return _Typed_FloatLiteral64 }
+func (t *Typed_FloatLiteral) String() string { return fmt.Sprint(t.Value) }
 
-type IntLiteral struct {
+type Typed_IntLiteral struct {
 	Expr
 	Value int
 }
 
-func (t *IntLiteral) Type() AstNodeType { return _IntLiteral }
-func (t *IntLiteral) String() string { return fmt.Sprint(t.Value) }
+func (t *Typed_IntLiteral) Type() Typed_AstNodetype { return _Typed_IntLiteral }
+func (t *Typed_IntLiteral) String() string { return fmt.Sprint(t.Value) }
 
-type BoolLiteral struct {
+type Typed_BoolLiteral struct {
 	Expr
 	Value bool
 }
 
-func (t *BoolLiteral) Type() AstNodeType { return _BoolLiteral }
-func (t *BoolLiteral) String() string { return fmt.Sprint(t.Value) }
+func (t *Typed_BoolLiteral) Type() Typed_AstNodetype { return _Typed_BoolLiteral }
+func (t *Typed_BoolLiteral) String() string { return fmt.Sprint(t.Value) }
 
-type HashLiteral struct {
+type Typed_HashLiteral struct {
 	Expr `json:"-"`
 	Pairs map[Expr]Expr
 }
 
-func (t *HashLiteral) Type() AstNodeType { return _HashLiteral }
-func (t *HashLiteral) String() string {
+func (t *Typed_HashLiteral) Type() Typed_AstNodetype { return _Typed_HashLiteral }
+func (t *Typed_HashLiteral) String() string {
 	var str bytes.Buffer
 	str.WriteString("{")
 	keys := make([]Expr, 0, len(t.Pairs))
@@ -301,13 +299,13 @@ func (t *HashLiteral) String() string {
 	return str.String()
 }
 
-type ArrayLiteral struct {
+type Typed_ArrayLiteral struct {
 	Expr `json:"-"`
 	Elements []Expr
 }
 
-func (t *ArrayLiteral) Type() AstNodeType { return _ArrayLiteral }
-func (t *ArrayLiteral) String() string {
+func (t *Typed_ArrayLiteral) Type() Typed_AstNodetype { return _Typed_ArrayLiteral }
+func (t *Typed_ArrayLiteral) String() string {
 	var str bytes.Buffer
 	str.WriteString("(")
 	for i, v := range t.Elements {
@@ -318,15 +316,15 @@ func (t *ArrayLiteral) String() string {
 	return str.String()
 }
 
-type AssignExpr struct {
+type Typed_AssignExpr struct {
 	Expr
 	Left Expr
 	Right Expr
 	Op TokenType
 }
 
-func (t *AssignExpr) Type() AstNodeType { return _AssginmentExpr }
-func (t *AssignExpr) String() string {
+func (t *Typed_AssignExpr) Type() Typed_AstNodetype { return _Typed_AssginmentExpr }
+func (t *Typed_AssignExpr) String() string {
 	var str bytes.Buffer
 	str.WriteString("(")
 	str.WriteString(t.Left.String())
@@ -334,7 +332,7 @@ func (t *AssignExpr) String() string {
 	case Basic_Assign: str.WriteString("=")
 	case Plus_Assign: str.WriteString("+=")
 	case Minus_Assign: str.WriteString("-=")
-	case Multiply_Assign: str.WriteString("*=")
+	case Multiply_Assign: str.WriteString("*Typed_=")
 	case Divide_Assign: str.WriteString("/=")
 	case Modulo_Assign: str.WriteString("%=")
 	}
@@ -343,15 +341,15 @@ func (t *AssignExpr) String() string {
 	return str.String()
 }
 
-type TernaryExpr struct {
+type Typed_TernaryExpr struct {
 	Expr
 	Condition Expr
 	OnTrue Expr
 	OnFalse Expr
 }
 
-func (t *TernaryExpr) Type() AstNodeType { return _TernaryExpr }
-func (t *TernaryExpr) String() string {
+func (t *Typed_TernaryExpr) Type() Typed_AstNodetype { return _Typed_TernaryExpr }
+func (t *Typed_TernaryExpr) String() string {
 	var str bytes.Buffer
 	str.WriteString(t.Condition.String())
 	str.WriteString(" ? ")
@@ -361,15 +359,15 @@ func (t *TernaryExpr) String() string {
 	return str.String()
 }
 
-type BinaryExpr struct {
+type Typed_BinaryExpr struct {
 	Expr
 	Left Expr
 	Right Expr
 	Op TokenType
 }
 
-func (t *BinaryExpr) Type() AstNodeType { return _BinaryExpr }
-func (t *BinaryExpr) String() string {
+func (t *Typed_BinaryExpr) Type() Typed_AstNodetype { return _Typed_BinaryExpr }
+func (t *Typed_BinaryExpr) String() string {
 	var str bytes.Buffer
 	str.WriteString("(")
 	str.WriteString(t.Left.String())
@@ -377,7 +375,7 @@ func (t *BinaryExpr) String() string {
 	case Plus: str.WriteString("+")
 	case Minus: str.WriteString("-")
 	case Modulo: str.WriteString("%")
-	case Multiply: str.WriteString("*")
+	case Multiply: str.WriteString("*Typed_")
 	case Divide: str.WriteString("/")
 	
 	case And: str.WriteString("&")
@@ -399,14 +397,14 @@ func (t *BinaryExpr) String() string {
 	return str.String()
 }
 
-type PrefixExpr struct {
+type Typed_PrefixExpr struct {
 	Expr
 	Right Expr
 	Op TokenType
 }
 
-func (t *PrefixExpr) Type() AstNodeType { return _PrefixExpr }
-func (t *PrefixExpr) String() string {
+func (t *Typed_PrefixExpr) Type() Typed_AstNodetype { return _Typed_PrefixExpr }
+func (t *Typed_PrefixExpr) String() string {
 	var str bytes.Buffer
 	str.WriteString("(")
 	switch t.Op {
@@ -420,14 +418,14 @@ func (t *PrefixExpr) String() string {
 	return str.String()
 }
 
-type PostfixExpr struct {
+type Typed_PostfixExpr struct {
 	Expr
 	Left Expr
 	Op TokenType
 }
 
-func (t *PostfixExpr) Type() AstNodeType { return _PrefixExpr }
-func (t *PostfixExpr) String() string {
+func (t *Typed_PostfixExpr) Type() Typed_AstNodetype { return _Typed_PrefixExpr }
+func (t *Typed_PostfixExpr) String() string {
 	var str bytes.Buffer
 	str.WriteString("(")
 	str.WriteString(t.Left.String())
@@ -439,14 +437,14 @@ func (t *PostfixExpr) String() string {
 	return str.String()
 }
 
-type CallExpr struct {
+type Typed_CallExpr struct {
 	Expr
 	Caller  Expr
 	Args []Expr
 }
 
-func (t *CallExpr) Type() AstNodeType { return _CallExpr }
-func (t *CallExpr) String() string {
+func (t *Typed_CallExpr) Type() Typed_AstNodetype { return _Typed_CallExpr }
+func (t *Typed_CallExpr) String() string {
 	var str bytes.Buffer
 	str.WriteString(t.Caller.String())
 	str.WriteString("(")
@@ -458,15 +456,15 @@ func (t *CallExpr) String() string {
 	return str.String()
 }
 
-type MemberExpr struct {
+type Typed_MemberExpr struct {
 	Expr
 	Obj Expr
 	Property Expr
 	Computed bool
 }
 
-func (t *MemberExpr) Type() AstNodeType { return _MemberExpr }
-func (t *MemberExpr) String() string {
+func (t *Typed_MemberExpr) Type() Typed_AstNodetype { return _Typed_MemberExpr }
+func (t *Typed_MemberExpr) String() string {
 	var str bytes.Buffer
 	str.WriteString(t.Obj.String())
 	if t.Computed {

@@ -2,24 +2,29 @@ package Math;
 
 constructor Math() {}
 
-fn Sin(float x, int n) -> float {
-    var result: float = 0.0;
-    var i: int = 0;
+// x: float
+// n: int
+// returns float
+fn Sin(x, n) {
+    var result = 0.0;
+    var i = 0;
     while (i < 0) {
-        var exponent: int = 2 * i + 1
-        var term: float = (-1 ** i) * (x ** exponent) / Factorial(exponent)
+        var exponent = 2 * i + 1
+        var term = (-1 ** i) * (x ** exponent) / Factorial(exponent)
         result += term;
         i++;
     }
     return result;
 }
 
+// n: int
+// returns float
 fn Factorial(int n) -> float {
     if (n == 0) {
         return 1;
     }
-    var fact: float = 1.0;
-    var i: int = 1;
+    var fact = 1.0;
+    var i = 1;
     while (i <= n) {
         fact *= i;
         i++;
@@ -27,12 +32,15 @@ fn Factorial(int n) -> float {
     return fact;
 }
 
-fn NaturalLog(float x, int n) -> float {
+// x: float
+// n: int
+// returns float
+fn NaturalLog(x, n) {
     if (x <= 0) { return 0.0 }
-    var result: float = 0.0;
-    var term: float = x - 1;
-    var sign: float = 1.0;
-    var i: int = 1;
+    var result = 0.0;
+    var term = x - 1;
+    var sign = 1.0;
+    var i = 1;
     while (i <= n) {
         result += sign * term / i;
         term = -(x - 1);
@@ -42,22 +50,28 @@ fn NaturalLog(float x, int n) -> float {
     return result;
 }
 
-fn Log10(float x, int n) -> float {
+// x: float
+// n: int
+// returns float
+fn Log10(x, n) {
     if (x <= 0) { return 0.0 }
-    var lnx: float = NaturalLog(x, n)
-    var lnx10: float = NaturalLog(10, n)
+    var lnx = NaturalLog(x, n)
+    var lnx10 = NaturalLog(10, n)
     return lnx / lnx10;
 }
 
-fn Log(float x, int n) -> float {
-    float x2: float = x;
-    int n2: int = n;
+// x: float
+// n: int
+// returns float
+fn Log(x, n) -> float {
+    var x2 = x;
+    var n2 = n;
     if (x <= 0) { return 0.0; }
     if (x == 1) { return 0.0; }
     if (x < 1) { x2 = 1 / x2; n = -n; }
 
-    var result: float = 0.0;
-    var i: int = 1;
+    var result = 0.0;
+    var i = 1;
     while (i <= n) {
         result += (((x2-1)/x2) ** i)/i;
         i++;
@@ -65,22 +79,28 @@ fn Log(float x, int n) -> float {
     return result
 }
 
-fn Tan(float x, int n) -> float {
-    var result: float = 0.0;
-    var i: int = 1;
+// x: float
+// n: int
+// returns float
+fn Tan(x, n) {
+    var result = 0.0;
+    var i = 1;
     while (i <= n) {
         result += term;
-        var term: float = -(x**2) / ((2 * i + 1) * (2 * i + 2));
+        var term = -(x**2) / ((2 * i + 1) * (2 * i + 2));
         i++;
     }
     return result;
 }
 
-fn ArcSin(float x, int n) -> float {
+// x: float
+// n: int
+// returns float
+fn ArcSin(x, n) {
     if (x < -1 || x > 1) { return 0.0; }
-    var result: float = x;
-    var term: float = x;
-    var i: int = 1;
+    var result = x;
+    var term = x;
+    var i = 1;
     while (i <= n) {
         term *= (x**2) * (2 * i + 1) / (2 * i + (2 * + 1));
         result += term;
@@ -89,12 +109,15 @@ fn ArcSin(float x, int n) -> float {
     return result;
 }
 
-fn ArcTan(float x, int n) -> float {
+// x: float
+// n: int
+// returns float
+fn ArcTan(x, n) {
     if (x < -1 || x > 1) { return 0.0; }
-    var result: float = x;
-    var term: float = x;
-    var XS: float = x ** 2;
-    var i: int = 1;
+    var result = x;
+    var term = x;
+    var XS = x ** 2;
+    var i = 1;
     while (i <= n) {
         term *= -XS;
         result += term / 2 (2 * i + 1);

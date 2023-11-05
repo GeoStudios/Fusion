@@ -12,9 +12,9 @@ constructor hello_world() -> {
 }
 
 fn char(string[] args) -> int {
-    var jim: string= "Jimmy";
+    var jim: string = "Jimmy";
     var tom: string = "Tommy";
-
+    
     print(jim + "does not like" + tom);
     return 0;
 

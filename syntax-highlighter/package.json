@@ -1,0 +1,30 @@
+{
+    "name": "fusion-syntax-highlighting",
+    "displayName": "Fusion Syntax Highlighting",
+    "description": "It Highlights sytax for the Fusion Programming Language",
+    "version": "0.0.1",
+    "publisher": "Zomboider",
+    "engines": {
+      "vscode": "^1.78.0"
+    },
+    "categories": [
+      "Programming Languages"
+    ],
+    "contributes": {
+      "languages": [{
+        "id": "fusion",
+        "aliases": ["Fusion", "fusion"],
+        "extensions": [".fun"],
+        "configuration": "./language-configuration.json"
+      }],
+      "grammars": [{
+        "language": "fusion",
+        "scopeName": "source.fusion",
+        "path": "./syntaxes/fusion.tmLanguage.json"
+      }]
+    },
+    "repository": {
+      "url": "https://github.com/ZombiiTheCoder/Fusion/syntax-highlighter"
+    }
+  }
+  

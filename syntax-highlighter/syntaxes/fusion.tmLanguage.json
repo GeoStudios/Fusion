@@ -1,0 +1,135 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Fusion",
+	"patterns": [
+		{
+			"include":"#comments_inline"
+		},
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#operators"
+		},
+		{
+			"include": "#numbers"
+		},
+		{
+			"include": "#functions"
+		},
+		{
+			"include": "#strings"
+		},
+		{
+			"include": "#strings_single"
+		},
+		{
+			"include": "#strings_double"
+		},
+		{
+			"include": "#paren-expression"
+		}
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [{
+				"name": "keyword.control",
+				"match": "\\b(fn|if|else|while|for|return)\\b"
+			},
+			{
+				"name":"keyword.other",
+				"match": "\\b(true|false|undefined|null|int|float|)\\b"
+			}]
+		},
+		"strings": {
+			"name": "string.quoted.other",
+			"begin": "(`)",
+			"end": "(`)"
+		},
+		"strings_single": {
+			"name": "string.quoted.single",
+			"begin": "(')",
+			"end": "(')"
+		},
+		"strings_double": {
+			"name": "string.quoted.double",
+			"begin": "(\")",
+			"end": "(\")"
+		},
+		"paren-expression": {
+			"begin": "\\(",
+			"end": "\\)",
+			"beginCaptures": {
+			  "0": { "name": "punctuation.paren.open" }
+			},
+			"endCaptures": {
+			  "0": { "name": "punctuation.paren.close" }
+			},
+			"name": "expression.group",
+			"patterns": [{ "include": "#expression" }]
+		},
+		"comments_inline": {
+			"patterns": [
+				{
+					"name": "comment.line",
+					"match": "\\?\\?.*",
+					"captures": {
+						"0": {
+					  "name": "punctuation.definition.comment"
+					}
+				}
+			}
+		]			
+	},
+	"functions": {
+		  "patterns": [
+			{
+				"name": "support.function",
+				"match": "\\b([^0-9=+-_~`!@#$%&*()\"']|[a-zA-Z])+[a-zA-Z0-9_]+[(]"
+			},
+			{
+				"name": "variable",
+				"match": "\\b[^0-9=+-_~`!@#$%&*()\"']+[a-zA-Z0-9_]*\\b"
+			},
+			{
+				"name": "constant.character",
+				"match": "\\b([^0-9=+-_~`!@#$%&*()\"'a-z]|[A-Z])+[A-Z0-9_]*\\b"
+			}
+		  ]
+	},
+	"operators":{
+		"patterns": [
+			{
+				"name": "keyword.operator.arithmetic",
+				"match": "[+\\-*/%]"
+			},
+			{
+				  "name": "keyword.operator.comparison",
+				  "match": "[!=]==?|[<>]=?"
+				},
+				{
+				  "name": "keyword.operator.logical",
+				  "match": "[!&|]"
+				}
+			  ]
+		},
+		"numbers": {
+			"patterns": [
+				{
+				  "name": "constant.numeric.integer",
+				  "match": "\\b\\d+\\b"
+				},
+				{
+				  "name": "constant.numeric.decimal",
+				  "match": "\\b\\d+\\.\\d+\\b"
+				},
+				{
+				  "name": "constant.numeric.scientific",
+				  "match": "\\b\\d+\\.?\\d*[+-]?\\d+\\b"
+				}
+			  ]
+		}
+		
+	},
+	"scopeName": "source.fusion"
+}
