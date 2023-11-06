@@ -14,7 +14,7 @@
       "languages": [{
         "id": "fusion",
         "aliases": ["Fusion", "fusion"],
-        "extensions": [".fun"],
+        "extensions": [".f"],
         "configuration": "./language-configuration.json"
       }],
       "grammars": [{

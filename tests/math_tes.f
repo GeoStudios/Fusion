@@ -1,17 +1,26 @@
 package math_tes;
 
+using "#/std";
+using "#/std";
+
 // args: string[]
 // returns int
 fn main() -> int {
     int x = 4;
     int z = -2;
-//    var h = {
-//        a: x
-//    };
-    int add = x + z;
-//    print(add);
-//    print(h["a"]);
-//    print(h.a);
+    HashMap h = {
+        a: x,
+        b: z
+    };
+    int add = h["a"] + h.b;
+    if (true) {
+        std.print("E");
+    } else {
+        std.print("A");
+    }
+    while (true) {
+        std.print(h.b);
+    }
     return add;
 }
-main();
+std.print(main());

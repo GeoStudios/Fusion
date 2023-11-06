@@ -204,7 +204,7 @@ func (p *Parser) ParsePostfixExpr() Expr {
 
 func (p *Parser) ParseCallMemberExpr() Expr {
 	member := p.ParseMemberExpr()
-	if p.At().Type == OpenParen && member.Type() == _Identifier && p.Past().Line == p.At().Line { 
+	if p.At().Type == OpenParen && p.Past().Line == p.At().Line { 
 		return p.ParseCallExpr(member)
 	}
 	return member
@@ -224,7 +224,7 @@ func (p *Parser) ParseMemberExpr() Expr {
 			// get identifier
 			property = p.ParsePrimaryExpr();
 			if (property.Type() != _Identifier) {
-			  log.Fatalf("Cannot use dot operator without right hand side being a identifier")
+			  log.Fatalf("Cannot use dot operator without right hand side being a identifier -> %v\n", property)
 			}
 		  } else { // this allows obj[computedValue]
 			computed = true;
@@ -261,6 +261,7 @@ func (p *Parser) ParsePrimaryExpr() Expr {
 	case Identifer: return &Identifier{Value: p.Next().Literal }
 	case String: return &StringLiteral{Value: p.Next().Literal }
 	case Null: p.Next(); return &NullLiteral{}
+	case Boolean: v := p.Next().Literal; value, _ := strconv.ParseBool(v); return &BoolLiteral{Value: value}
 	case Integer: v := p.Next().Literal; value, _ := strconv.ParseInt(v, 10, 64); return &IntLiteral{Value: int(value)}
 	case Float: value, _ := strconv.ParseFloat(p.Next().Literal, 64); return &FloatLiteral{Value: value}
 	case OpenBracket:
@@ -273,10 +274,10 @@ func (p *Parser) ParsePrimaryExpr() Expr {
 		p.Expect(CloseParen)
 		return expr
 	case OpenBrace:
-		pairs := make(map[Expr]Expr)
+		pairs := make(map[string]Expr)
 		p.Expect(OpenBrace)
 		for p.At().Type != CloseBrace {
-			key := p.ParseExpr()
+			key := p.Expect(Identifer).Literal
 			p.Expect(Colon)
 			value := p.ParseExpr()
 			pairs[key] = value

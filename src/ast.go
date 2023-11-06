@@ -90,14 +90,16 @@ type ImportStmt struct {
 	Stmt
 	PackageName string
 	IsBuiltIn   bool
+	IsNative bool
 }
 
-func (t *ImportStmt) Type() AstNodeType { return _PackageStmt }
+func (t *ImportStmt) Type() AstNodeType { return _ImportStmt }
 func (t *ImportStmt) String() string    {
-	if t.IsBuiltIn {
-		return "using \"@/" + strings.TrimPrefix(t.PackageName, "core/") + "\""
+	switch {
+	case t.IsBuiltIn: return "using \"@/" + strings.TrimPrefix(t.PackageName, "core/") + "\""
+	case t.IsNative: return "using \"#/" + t.PackageName + "\""
+	default: return "using \"" + t.PackageName + "\";"
 	}
-	return "using \"" + t.PackageName + "\";"
 }
 
 type IfStmt struct {
@@ -184,9 +186,10 @@ func (t *VarStmt) String() string {
 
 type FunctionStmt struct {
 	Stmt
+	Anonymous bool
 	Name string
 	Args []Arg
-	Body Stmt
+	Body []Stmt
 	ObjType ObjectTypes
 }
 
@@ -211,7 +214,14 @@ func (t *FunctionStmt) String() string {
 		case _FloatObject: str.WriteString("float ")
 		case _NullObject: str.WriteString("void ")
 	}
-	str.WriteString(t.Body.String())
+	str.WriteString("{")
+	for _, v := range t.Body {
+		str.WriteString(v.String())
+		if v.Type() != _ExprStmt {
+			str.WriteString(";")
+		}
+	}
+	str.WriteString("}")
 	return str.String()
 }
 
@@ -281,20 +291,20 @@ func (t *BoolLiteral) String() string { return fmt.Sprint(t.Value) }
 
 type HashLiteral struct {
 	Expr `json:"-"`
-	Pairs map[Expr]Expr
+	Pairs map[string]Expr
 }
 
 func (t *HashLiteral) Type() AstNodeType { return _HashLiteral }
 func (t *HashLiteral) String() string {
 	var str bytes.Buffer
 	str.WriteString("{")
-	keys := make([]Expr, 0, len(t.Pairs))
+	keys := make([]string, 0, len(t.Pairs))
 	for e := range t.Pairs {
 		keys = append(keys, e)
 	}
 	i:=0
 	for key, value := range t.Pairs {
-		str.WriteString(key.String()+":"+value.String())
+		str.WriteString(key+":"+value.String())
 		if i < len(keys)-1 { str.WriteString(",") }
 		i++
 	}

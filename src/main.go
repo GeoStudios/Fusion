@@ -28,5 +28,5 @@ func main() {
 	lex := New_Lexer(os.ReadFile(file))
 	par := New_Parser(lex.Tokenize())
 	inp := New_Interpreter()
-	fmt.Println(inp.Eval(par.ProduceAst(), New_Env(nil)))
+	inp.Eval(par.ProduceAst(), New_Env(nil))
 }

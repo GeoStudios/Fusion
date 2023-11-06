@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 )
@@ -33,11 +34,13 @@ func GetTypeFromToken(value TokenType) ObjectTypes {
 		Integer: _IntObject,
 		Float:   _FloatObject,
 		Void:    _NullObject,
+		HashMap: _HashObject,
+		Array: _ArrayObject,
 	}
 	if _, ok := m[value]; ok {
 		return m[value]
 	}
-	log.Fatalln("NOT A TYPE")
+	log.Fatalf("NOT A TYPE %v\n", value)
 	return _NullObject
 }
 
@@ -83,19 +86,24 @@ type FunctionObject struct {
 	Name string
 	Args []Arg
 	Env *Env
-	Body Stmt
+	Body []Stmt
 	RetType ObjectTypes
 }
 
 func (s *FunctionObject) Type() ObjectTypes { return _FuncObject }
-func (s *FunctionObject) String() string { return "\""+s.Body.String()+"\"" }
+func (s *FunctionObject) String() string { return "\"fn "+s.Name+"\"" }
 
-type NativeCall func(args []Object, env Env) Object
+type NativeCall func(args []Object, env *Env) Object
 
 type NativeFunctionObject struct {
 	Object
 	Name string
+	Call NativeCall
+	RetType ObjectTypes
 }
+
+func (s *NativeFunctionObject) Type() ObjectTypes { return _NativeFuncObject }
+func (s *NativeFunctionObject) String() string { return "\"func "+s.Name+"\"" }
 
 type ReturnObject struct {
 	Object
@@ -104,6 +112,30 @@ type ReturnObject struct {
 
 func (s *ReturnObject) Type() ObjectTypes { return _ReturnObject }
 func (s *ReturnObject) String() string { return s.Value.String() }
+
+type HashObject struct {
+	Object
+	Expr `json:"-"`
+	Pairs map[string]Object
+}
+
+func (t *HashObject) Type() ObjectTypes { return _HashObject }
+func (t *HashObject) String() string {
+	var str bytes.Buffer
+	str.WriteString("{")
+	keys := make([]string, 0, len(t.Pairs))
+	for e := range t.Pairs {
+		keys = append(keys, e)
+	}
+	i:=0
+	for key, value := range t.Pairs {
+		str.WriteString(key+":"+value.String())
+		if i < len(keys)-1 { str.WriteString(",") }
+		i++
+	}
+	str.WriteString("}")
+	return str.String()
+}
 
 func UnWrapAsInt(o Object) int {
 	switch o.Type() {

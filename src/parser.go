@@ -72,8 +72,9 @@ func (p *Parser) ParseStmt_PRG() Stmt {
 	case Return: log.Fatalln("ILLEGAL RETURN STMT, CANNOT BE OUTSIDE BLOCKSTMT"); return &ExprStmt{ Expression: p.ParseExpr() }
 	case Import: return p.ParseImportStmt()
 	case If: return p.ParseIfStmt()
+	case While: return p.ParseWhileStmt()
 	case Function: return p.ParseFunctionStmt()
-	case Constant, Variable: return p.ParseVarStmt()
+	case Constant, Variable, Integer, Float, String, Boolean, Void, Function_Type, HashMap, Array: return p.ParseVarStmt()
 	default:
 		stmt := Stmt(&ExprStmt{ Expression: p.ParseExpr() })
 		p.Expect(SemiColon)
@@ -91,8 +92,9 @@ func (p *Parser) ParseStmt() Stmt {
 	case Return: return p.ParseReturnStmt()
 	case Import: log.Fatalln("ILLEGAL IMPORT STMT, IMPORT IS HIGH LEVEL"); return &ExprStmt{ Expression: p.ParseExpr() }
 	case If: return p.ParseIfStmt()
+	case While: return p.ParseWhileStmt()
 	case Function: return p.ParseFunctionStmt()
-	case Constant, Variable, Integer, Float, String, Boolean, Void:
+	case Constant, Variable, Integer, Float, String, Boolean, Void, Function_Type, HashMap, Array:
 		return p.ParseVarStmt()
 	default:
 		stmt := Stmt(&ExprStmt{ Expression: p.ParseExpr() })
@@ -115,12 +117,14 @@ func (p *Parser) ParseImportStmt() Stmt {
 	p.Expect(Import)
 	value := p.Expect(String).Literal
 	IsBuiltIn := strings.HasPrefix(value, "@/")
-	if IsBuiltIn {
-		value = strings.TrimPrefix(value, "@/")
-		value = "core/" + value
+	IsNative := strings.HasPrefix(value, "#/")
+	switch {
+		case IsBuiltIn: value = "core/"+strings.TrimPrefix(value, "@/")
+		case IsNative: value = strings.TrimPrefix(value, "#/")
 	}
 	p.Expect(SemiColon)
 	return &ImportStmt{
+		IsNative: IsNative,
 		IsBuiltIn: IsBuiltIn,
 		PackageName: value,
 	}
@@ -169,6 +173,24 @@ func (p *Parser) ParseIfStmt() Stmt {
 	}
 }
 
+func (p *Parser) ParseWhileStmt() Stmt {
+	p.Expect(While)
+	p.Expect(OpenParen)
+	Condition := p.ParseExpr()
+	p.Expect(CloseParen)
+	var Loop Stmt
+    if p.At().Type == OpenBrace {
+        Loop = p.ParseBlockStmt()
+    } else {
+        Loop = p.ParseStmt()
+    }
+	if p.At().Type == SemiColon { p.Expect(SemiColon) }
+	return &WhileStmt{
+		Condition: Condition,
+		Loop: Loop,
+	}
+}
+
 func (p *Parser) ParseBlockStmt() Stmt {
 	body := []Stmt{}
 	p.Expect(OpenBrace)
@@ -181,15 +203,34 @@ func (p *Parser) ParseBlockStmt() Stmt {
 
 func (p *Parser) ParseFunctionStmt() Stmt {
 	p.Expect(Function)
+	if p.At().Type == OpenParen {
+		return p.ParseAnynoymousFunctionStmt()
+	}
 	Name := p.Expect(Identifer).Literal
 	p.Expect(OpenParen)
 	Args := p.ParseTypedArguments(CloseParen)
 	p.Expect(Arrow)
 	Type := GetTypeFromToken(p.Next().Type)
-	Body := p.ParseBlockStmt()
+	Body := p.ParseBlockStmt().(*BlockStmt).Body
 	if p.At().Type == SemiColon { p.Expect(SemiColon) }
 	return &FunctionStmt{
+		Anonymous: false,
 		Name: Name,
+		Args: Args,
+		Body: Body,
+		ObjType: Type,
+	}
+}
+
+func (p *Parser) ParseAnynoymousFunctionStmt() Stmt {
+	p.Expect(OpenParen)
+	Args := p.ParseTypedArguments(CloseParen)
+	p.Expect(Arrow)
+	Type := GetTypeFromToken(p.Next().Type)
+	Body := p.ParseBlockStmt().(*BlockStmt).Body
+	if p.At().Type == SemiColon { p.Expect(SemiColon) }
+	return &FunctionStmt{
+		Anonymous: true,
 		Args: Args,
 		Body: Body,
 		ObjType: Type,

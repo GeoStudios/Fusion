@@ -4,9 +4,9 @@ Example:
 ```cs
 package main;
 
-using "@/std";
+using "#/std";
 
-fn main(string[] args) -> int {
+fn main() -> int {
     int x = 4;
     int z = -2;
 
@@ -14,6 +14,7 @@ fn main(string[] args) -> int {
     std.print(add)
     return 0;
 }
+main()
 ```
 
 All .f files must have a `fn main(string[] args) -> int {}` so it can launch it if it is the main file

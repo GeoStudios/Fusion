@@ -34,12 +34,13 @@
 		"keywords": {
 			"patterns": [{
 				"name": "keyword.control",
-				"match": "\\b(fn|if|else|while|for|return)\\b"
+				"match": "\\b(fn|using|package|const|var|if|else|while|return)\\b"
 			},
 			{
-				"name":"keyword.other",
-				"match": "\\b(true|false|undefined|null|int|float|)\\b"
-			}]
+				"name":"support.constant",
+				"match": "\\b(string|bool|int|float|void|Function|HashMap|Array|true|false|null)\\b"
+			}
+			]
 		},
 		"strings": {
 			"name": "string.quoted.other",
@@ -72,7 +73,7 @@
 			"patterns": [
 				{
 					"name": "comment.line",
-					"match": "\\?\\?.*",
+					"match": "\\/\\/.*",
 					"captures": {
 						"0": {
 					  "name": "punctuation.definition.comment"
@@ -88,12 +89,8 @@
 				"match": "\\b([^0-9=+-_~`!@#$%&*()\"']|[a-zA-Z])+[a-zA-Z0-9_]+[(]"
 			},
 			{
-				"name": "variable",
-				"match": "\\b[^0-9=+-_~`!@#$%&*()\"']+[a-zA-Z0-9_]*\\b"
-			},
-			{
-				"name": "constant.character",
-				"match": "\\b([^0-9=+-_~`!@#$%&*()\"'a-z]|[A-Z])+[A-Z0-9_]*\\b"
+				"name": "constant.regexp",
+				"match": "\\b([^0-9=+-_~`!@#$%&*()\"']|[a-zA-Z])+[a-zA-Z0-9_]"
 			}
 		  ]
 	},
