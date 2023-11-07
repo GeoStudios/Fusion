@@ -6,6 +6,7 @@ import (
 	"io/fs"
 	"os"
 	"path"
+	"strings"
 )
 
 // go:embed lib
@@ -25,8 +26,10 @@ func main() {
 	fmt.Println(file)
 	fmt.Println(args)
 
+	_, fileName := path.Split(file)
+	fileName = strings.Split(fileName, ".")[0]
 	lex := New_Lexer(os.ReadFile(file))
-	par := New_Parser(lex.Tokenize())
+	par := New_Parser(lex.Tokenize(), fileName)
 	inp := New_Interpreter()
 	inp.Eval(par.ProduceAst(), New_Env(nil))
 }

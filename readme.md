@@ -14,7 +14,7 @@ fn main() -> int {
     std.print(add)
     return 0;
 }
-main()
+main();
 ```
 
 All .f files must have a `fn main(string[] args) -> int {}` so it can launch it if it is the main file

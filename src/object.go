@@ -137,6 +137,23 @@ func (t *HashObject) String() string {
 	return str.String()
 }
 
+type ArrayObject struct {
+	Expr `json:"-"`
+	Elements []Object
+}
+
+func (t *ArrayObject) Type() ObjectTypes { return _ArrayObject }
+func (t *ArrayObject) String() string {
+	var str bytes.Buffer
+	str.WriteString("(")
+	for i, v := range t.Elements {
+		str.WriteString(v.String())
+		if i < len(t.Elements)-1 { str.WriteString(",") }
+	}
+	str.WriteString(")")
+	return str.String()
+}
+
 func UnWrapAsInt(o Object) int {
 	switch o.Type() {
 	case _FloatObject: return int(o.(*FloatObject).Value)
@@ -151,4 +168,21 @@ func UnWrapAsFloat(o Object) float64 {
 		case _IntObject: return float64(o.(*IntObject).Value)
 		default: log.Fatalf("Cannot Convert %v To Float", o); return 0
 		}
+}
+
+func IsTruthy(c Object) bool {
+	switch c.Type() {
+	case _NullObject: return false
+	case _IntObject: return UnWrapAsFloat(c) > 0
+	case _FloatObject: return UnWrapAsFloat(c) > 0
+	case _StringObject: return c.(*StringObject).Value != ""
+	case _BooleanObject: return c.(*BooleanObject).Value
+	case _HashObject: return len(c.(*HashObject).Pairs) != 0
+	case _MemberObject: return true
+	case _ArrayObject: return len(c.(*ArrayObject).Elements) != 0
+	case _FuncObject: return true
+	case _NativeFuncObject: return true
+	case _ReturnObject: return IsTruthy(c.(*ReturnObject).Value)
+	default: return false
+	}
 }

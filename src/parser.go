@@ -8,9 +8,10 @@ import (
 type Parser struct {
 	ptr    int
 	tokens []Token
+	file string
 }
 
-func New_Parser(tokens []Token) *Parser { return &Parser{ptr: 0, tokens: tokens} }
+func New_Parser(tokens []Token, fileName string) *Parser { return &Parser{ptr: 0, tokens: tokens, file:fileName} }
 
 func (p *Parser) NotEof() bool { return p.tokens[p.ptr].Type != EOF }
 
@@ -63,6 +64,12 @@ func (p *Parser) ProduceAst() Stmt {
 	p.Expect(SemiColon)
 	for p.NotEof() {
 		body = append(body, p.ParseStmt_PRG())
+	}
+	if pkgName != p.file {
+		log.Fatalf("FILE NAME MUST BE THE SAME AS PACKAGE NAME file:%v -> pkg:%v",
+			p.file,
+			pkgName,	
+		)
 	}
 	return &Program{Body: body, PackageName: pkgName}
 }

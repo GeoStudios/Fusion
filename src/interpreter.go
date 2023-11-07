@@ -51,10 +51,33 @@ func (s *Interpreter) Eval(node AstNode, env *Env) Object {
 	case _PrefixExpr: return s.EvaluatePrefixExpr(node.(*PrefixExpr), env)
 	case _BinaryExpr: return s.EvaluateBinaryExpr(node.(*BinaryExpr), env)
 	case _MemberExpr: return s.EvaluateMemberExpr(node.(*MemberExpr), env)
+	case _IfStmt: return s.EvaluateIfStmt(node.(*IfStmt), env)
+	case _WhileStmt: return s.EvaluateWhileStmt(node.(*WhileStmt), env)
 	default:
 		log.Fatalln("Could Not Execute Node:", node)
 		return &NullObject{}
 	}
+}
+
+func (s *Interpreter) EvaluateIfStmt(node *IfStmt, env *Env) Object {
+	privEnv := New_Env(env)
+	condition := s.Eval(node.Condition, privEnv)
+	if IsTruthy(condition) {
+		s.Eval(node.OnTrue, privEnv)
+	} else {
+		s.Eval(node.OnFalse, privEnv)
+	}
+	return &NullObject{}
+}
+
+func (s *Interpreter) EvaluateWhileStmt(node *WhileStmt, env *Env) Object {
+	privEnv := New_Env(env)
+	condition := s.Eval(node.Condition, privEnv)
+	for IsTruthy(condition) {
+		s.Eval(node.Loop, env)
+		condition = s.Eval(node.Condition, privEnv)
+	}
+	return &NullObject{}
 }
 
 func (s *Interpreter) EvaluateMemberExpr(node *MemberExpr, env *Env) Object {
