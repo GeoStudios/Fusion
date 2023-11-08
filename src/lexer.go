@@ -70,12 +70,11 @@ func (l *Lexer) Tokenize() []Token {
 			if l.Peek(1) == '=' { l.addTkn("-=", Minus_Assign, l.line, l.ptr); l.Next(); l.Next(); break }
 			l.addTkn("-", Minus, l.line, l.ptr); l.Next()
 		case '*':
+			if l.Peek(1) == '^' { l.addTkn("*^", NthRoot, l.line, l.ptr); l.Next(); l.Next(); break }
 			if l.Peek(1) == '*' { l.addTkn("**", Exponent, l.line, l.ptr); l.Next(); l.Next(); break }
-			if l.Peek(1) == '/' { l.addTkn("*^", Square_Root, l.line, l.ptr); l.Next(); l.Next(); break }
 			if l.Peek(1) == '=' { l.addTkn("*=", Multiply_Assign, l.line, l.ptr); l.Next(); l.Next(); break }
 			l.addTkn("*", Multiply, l.line, l.ptr); l.Next()
 		case '/':
-			if l.Peek(1) == '*' { l.addTkn("/*", Square_Root, l.line, l.ptr); l.Next(); l.Next(); break }
 			if l.Peek(1) == '=' { l.addTkn("/=", Divide_Assign, l.line, l.ptr); l.Next(); l.Next(); break }
 			if l.Peek(1) == '/' {
 				l.Next(); l.Next()
@@ -87,10 +86,10 @@ func (l *Lexer) Tokenize() []Token {
 			if l.Peek(1) == '=' { l.addTkn("!=", Divide_Assign, l.line, l.ptr); l.Next(); l.Next(); break }
 			l.addTkn("!", Logic_Not, l.line, l.ptr); l.Next()
 		case '&':
-			if l.Peek(1) == '%' { l.addTkn("&&", Logic_And, l.line, l.ptr); l.Next(); l.Next(); break }
+			if l.Peek(1) == '&' { l.addTkn("&&", Logic_And, l.line, l.ptr); l.Next(); l.Next(); break }
 			l.addTkn("&", And, l.line, l.ptr); l.Next()
 		case '|':
-			if l.Peek(1) == '%' { l.addTkn("||", Logic_Or, l.line, l.ptr); l.Next(); l.Next(); break }
+			if l.Peek(1) == '|' { l.addTkn("||", Logic_Or, l.line, l.ptr); l.Next(); l.Next(); break }
 			l.addTkn("|", Or, l.line, l.ptr); l.Next()
 		case '^': l.addTkn("^", Or, l.line, l.ptr); l.Next()
 		case '~': l.addTkn("~", Not, l.line, l.ptr); l.Next()

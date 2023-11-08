@@ -81,7 +81,7 @@ func (p *Parser) ParseStmt_PRG() Stmt {
 	case If: return p.ParseIfStmt()
 	case While: return p.ParseWhileStmt()
 	case Function: return p.ParseFunctionStmt()
-	case Constant, Variable, Integer, Float, String, Boolean, Void, Function_Type, HashMap, Array: return p.ParseVarStmt()
+	case Constant, Variable, Integer, Float, String, Boolean, Void, Function_Type, HashMap, Array, NativeFunction: return p.ParseVarStmt()
 	default:
 		stmt := Stmt(&ExprStmt{ Expression: p.ParseExpr() })
 		p.Expect(SemiColon)
@@ -101,7 +101,7 @@ func (p *Parser) ParseStmt() Stmt {
 	case If: return p.ParseIfStmt()
 	case While: return p.ParseWhileStmt()
 	case Function: return p.ParseFunctionStmt()
-	case Constant, Variable, Integer, Float, String, Boolean, Void, Function_Type, HashMap, Array:
+	case Constant, Variable, Integer, Float, String, Boolean, Void, Function_Type, HashMap, Array, NativeFunction:
 		return p.ParseVarStmt()
 	default:
 		stmt := Stmt(&ExprStmt{ Expression: p.ParseExpr() })
@@ -123,6 +123,12 @@ func (p *Parser) ParseReturnStmt() Stmt {
 func (p *Parser) ParseImportStmt() Stmt {
 	p.Expect(Import)
 	value := p.Expect(String).Literal
+	ChangesName := p.At().Type == As
+	var NewName string
+	if ChangesName {
+		p.Expect(As)
+		NewName = p.Expect(String).Literal
+	}
 	IsBuiltIn := strings.HasPrefix(value, "@/")
 	IsNative := strings.HasPrefix(value, "#/")
 	switch {
@@ -134,6 +140,8 @@ func (p *Parser) ParseImportStmt() Stmt {
 		IsNative: IsNative,
 		IsBuiltIn: IsBuiltIn,
 		PackageName: value,
+		ChangesName: ChangesName,
+		NewName: NewName,
 	}
 }
 
@@ -185,12 +193,7 @@ func (p *Parser) ParseWhileStmt() Stmt {
 	p.Expect(OpenParen)
 	Condition := p.ParseExpr()
 	p.Expect(CloseParen)
-	var Loop Stmt
-    if p.At().Type == OpenBrace {
-        Loop = p.ParseBlockStmt()
-    } else {
-        Loop = p.ParseStmt()
-    }
+	Loop := p.ParseBlockStmt().(*BlockStmt).Body
 	if p.At().Type == SemiColon { p.Expect(SemiColon) }
 	return &WhileStmt{
 		Condition: Condition,

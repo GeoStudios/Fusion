@@ -34,6 +34,8 @@ func GetTypeFromToken(value TokenType) ObjectTypes {
 		Integer: _IntObject,
 		Float:   _FloatObject,
 		Void:    _NullObject,
+		Function: _FuncObject,
+		NativeFunction: _NativeFuncObject,
 		HashMap: _HashObject,
 		Array: _ArrayObject,
 	}
@@ -79,7 +81,7 @@ type StringObject struct {
 }
 
 func (s *StringObject) Type() ObjectTypes { return _StringObject }
-func (s *StringObject) String() string { return "\""+s.Value+"\"" }
+func (s *StringObject) String() string { return s.Value }
 
 type FunctionObject struct {
 	Object
@@ -145,20 +147,20 @@ type ArrayObject struct {
 func (t *ArrayObject) Type() ObjectTypes { return _ArrayObject }
 func (t *ArrayObject) String() string {
 	var str bytes.Buffer
-	str.WriteString("(")
+	str.WriteString("[")
 	for i, v := range t.Elements {
 		str.WriteString(v.String())
-		if i < len(t.Elements)-1 { str.WriteString(",") }
+		if i < len(t.Elements)-1 { str.WriteString(", ") }
 	}
-	str.WriteString(")")
+	str.WriteString("]")
 	return str.String()
 }
 
 func UnWrapAsInt(o Object) int {
 	switch o.Type() {
-	case _FloatObject: return int(o.(*FloatObject).Value)
-	case _IntObject: return o.(*IntObject).Value
-	default: log.Fatalf("Cannot Convert %v To Int", o); return 0
+		case _FloatObject: return int(o.(*FloatObject).Value)
+		case _IntObject: return o.(*IntObject).Value
+		default: log.Fatalf("Cannot Convert %v To Int", o); return 0
 	}
 }
 
@@ -167,7 +169,7 @@ func UnWrapAsFloat(o Object) float64 {
 		case _FloatObject: return o.(*FloatObject).Value
 		case _IntObject: return float64(o.(*IntObject).Value)
 		default: log.Fatalf("Cannot Convert %v To Float", o); return 0
-		}
+	}
 }
 
 func IsTruthy(c Object) bool {
@@ -184,5 +186,12 @@ func IsTruthy(c Object) bool {
 	case _NativeFuncObject: return true
 	case _ReturnObject: return IsTruthy(c.(*ReturnObject).Value)
 	default: return false
+	}
+}
+
+func getValue(c Object) Object {
+	switch c.Type() {
+	case _ReturnObject: return getValue(c.(*ReturnObject).Value)
+	default: return c
 	}
 }

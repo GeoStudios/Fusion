@@ -2,30 +2,36 @@ package main
 
 import (
 	"embed"
+	_ "embed"
 	"fmt"
 	"io/fs"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 )
 
-// go:embed lib
-var lib_e embed.FS
+//go:embed lib
+var lib embed.FS
 
-func ReadEmbedFile(filePath string) string {
-	fileSys, _ := fs.Sub(lib_e, path.Join("lib_e", path.Dir(filePath)))
+func ReadEmbedFile(filePath string) ([]byte, error) {
+	fileSys, _ := fs.Sub(lib, path.Join("lib", path.Dir(filePath)))
 	_, fileName := path.Split(filePath)
-	content, _ := fs.ReadFile(fileSys, fileName)
-	return string(content)
+	content, err := fs.ReadFile(fileSys, fileName)
+	return content, err
 }
 
+var CurrentFilePath string
+var argv = os.Args[1:]
 func main() {
-	argv := os.Args[1:]
+	
 	file, args := argv[0], argv[1:]
-
+	argv = args
 	fmt.Println(file)
 	fmt.Println(args)
-
+	CurrentFilePath, _ = filepath.Abs(file)
+	CurrentFilePath = filepath.Dir(CurrentFilePath)
+	
 	_, fileName := path.Split(file)
 	fileName = strings.Split(fileName, ".")[0]
 	lex := New_Lexer(os.ReadFile(file))

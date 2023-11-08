@@ -12,6 +12,7 @@ const (
 	Boolean
 	Null
 	Void
+	NativeFunction
 	Function_Type
 	HashMap
 	Array
@@ -32,7 +33,7 @@ const (
 	Multiply
 
 	Exponent
-	Square_Root
+	NthRoot
 
 	And
 	Or
@@ -84,6 +85,7 @@ const (
 	Else
 	While
 	Return
+	As
 )
 
 type Token struct {
@@ -95,14 +97,15 @@ type Token struct {
 
 func GetKeyword(value string) TokenType {
 	m := map[string]TokenType{
-		"string":   String,
-		"bool":     Boolean,
-		"int":      Integer,
-		"float":    Float,
-		"void":     Void,
-		"Function": Function_Type,
-		"HashMap":  HashMap,
-		"Array":    Array,
+		"string":         String,
+		"bool":           Boolean,
+		"int":            Integer,
+		"float":          Float,
+		"void":           Void,
+		"Function":       Function_Type,
+		"NativeFunction": NativeFunction,
+		"HashMap":        HashMap,
+		"Array":          Array,
 
 		"fn":      Function,
 		"using":   Import,
@@ -116,6 +119,7 @@ func GetKeyword(value string) TokenType {
 		"else":    Else,
 		"while":   While,
 		"return":  Return,
+		"as":      As,
 	}
 	if _, ok := m[value]; ok {
 		return m[value]

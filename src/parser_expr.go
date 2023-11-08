@@ -157,7 +157,8 @@ func (p *Parser) ParseAdditiveExpr() Expr {
 
 func (p *Parser) ParseMultiplicativeExpr() Expr {
 	left := p.ParsePrefixExpr()
-	for p.At().Type == Multiply || p.At().Type == Divide || p.At().Type == Modulo {
+	for p.At().Type == Multiply || p.At().Type == Divide ||
+	p.At().Type == Modulo || p.At().Type == Exponent || p.At().Type == NthRoot {
 		op := p.Next().Type
 		right := p.ParsePrefixExpr()
 		left = &BinaryExpr{

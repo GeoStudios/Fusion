@@ -91,6 +91,8 @@ type ImportStmt struct {
 	PackageName string
 	IsBuiltIn   bool
 	IsNative bool
+	ChangesName bool
+	NewName string
 }
 
 func (t *ImportStmt) Type() AstNodeType { return _ImportStmt }
@@ -126,7 +128,7 @@ func (t *IfStmt) String() string {
 type WhileStmt struct {
 	Stmt
 	Condition Expr
-	Loop Stmt
+	Loop []Stmt
 }
 
 func (t *WhileStmt) Type() AstNodeType { return _WhileStmt }
@@ -135,7 +137,14 @@ func (t *WhileStmt) String() string {
 	str.WriteString("while (")
 	str.WriteString(t.Condition.String())
 	str.WriteString(")")
-	str.WriteString(t.Loop.String())
+	str.WriteString("{")
+	for _, v := range t.Loop {
+		str.WriteString(v.String())
+		if v.Type() != _ExprStmt {
+			str.WriteString(";")
+		}
+	}
+	str.WriteString("}")
 	return str.String()
 }
 
@@ -153,7 +162,6 @@ func (t *BlockStmt) String() string {
 		if v.Type() != _ExprStmt {
 			str.WriteString(";")
 		}
-		// if i < len(t.Body)-1 { str.WriteString(";") }
 	}
 	str.WriteString("}")
 	return str.String()
@@ -320,12 +328,12 @@ type ArrayLiteral struct {
 func (t *ArrayLiteral) Type() AstNodeType { return _ArrayLiteral }
 func (t *ArrayLiteral) String() string {
 	var str bytes.Buffer
-	str.WriteString("(")
+	str.WriteString("[")
 	for i, v := range t.Elements {
 		str.WriteString(v.String())
-		if i < len(t.Elements)-1 { str.WriteString(",") }
+		if i < len(t.Elements)-1 { str.WriteString(", ") }
 	}
-	str.WriteString(")")
+	str.WriteString("]")
 	return str.String()
 }
 

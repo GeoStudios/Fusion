@@ -1,26 +1,26 @@
 package math_tes;
 
 using "#/std";
-using "#/std";
+using "@/StrongMath_Wrapper.f" as "Math";
 
-// args: string[]
+// args: Array
 // returns int
-fn main() -> int {
-    int x = 4;
-    int z = -2;
-    HashMap h = {
-        a: x,
-        b: z
-    };
-    int add = h["a"] + h.b;
-    if (true) {
-        std.print("E");
-    } else {
-        std.print("A");
-    }
-    while (true) {
-        std.print(h.b);
-    }
-    return add;
+fn main() -> void {
+    std.println(Math.Sin(69));
+    std.println(Math.Sinh(69));
+    std.println(Math.ASin(69));
+    std.println(Math.ASinh(69));
+    std.print(std.LineSeparator);
+    std.println(Math.Cosine(69));
+    std.println(Math.Cosineh(69));
+    std.println(Math.ACosine(69));
+    std.println(Math.ACosineh(69));
+    std.print(std.LineSeparator);
+    std.println(Math.Tanh(69));
+    std.println(Math.Tan(69));
+    std.println(Math.ATan(69));
+    std.println(Math.ATanh(69));
+    std.println(Math.ATan2(69, 69));
+    return;
 }
-std.print(main());
+main();

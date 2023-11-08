@@ -32,14 +32,15 @@
 	],
 	"repository": {
 		"keywords": {
-			"patterns": [{
-				"name": "keyword.control",
-				"match": "\\b(fn|using|package|const|var|if|else|while|return)\\b"
-			},
-			{
-				"name":"support.constant",
-				"match": "\\b(string|bool|int|float|void|Function|HashMap|Array|true|false|null)\\b"
-			}
+			"patterns": [
+				{
+					"name":"support.constant",
+					"match": "\\b(string|bool|int|float|void|Function|HashMap|Array|true|false|null)"
+				},
+				{
+					"name": "keyword.control",
+					"match": "\\b(fn|using|package|const|var|if|else|while|return|as)"
+				}
 			]
 		},
 		"strings": {
