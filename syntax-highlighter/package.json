@@ -14,7 +14,7 @@
       "languages": [{
         "id": "fusion",
         "aliases": ["Fusion", "fusion"],
-        "extensions": [".f"],
+        "extensions": [".fu"],
         "configuration": "./language-configuration.json"
       }],
       "grammars": [{
@@ -27,4 +27,3 @@
       "url": "https://github.com/ZombiiTheCoder/Fusion/syntax-highlighter"
     }
   }
-  

@@ -7,4 +7,5 @@ cd syntax-highlighter
 npx vsce package
 
 # Change back to the parent directory
+# shellcheck disable=SC2103
 cd ..
